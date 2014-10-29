@@ -1,0 +1,33 @@
+{
+  "name": "bip-pod-evernote",
+  "version": "0.0.1",
+  "description": "evernote Pod for Bipio",
+  "keywords": [
+    "bip",
+    "bipio",
+    "pod",
+    "evernote"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bipio-server/bip-pod-evernote.git"
+  },
+  "bugs": {
+    "url": "http://github.com/bipio-server/bip-pod-evernote/issues"
+  },
+  "licenses": [
+    {
+      "type": "GNU GPLv3",
+      "url": "http://www.gnu.org/copyleft/gpl.html"
+    }
+  ],
+  "main": ".",
+  "dependencies": {
+    "bip-pod": ">=0.0.1",
+    "evernote": "^1.25.3",
+    "passport-evernote": "^0.1.1"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  }
+}
