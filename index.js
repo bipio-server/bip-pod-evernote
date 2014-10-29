@@ -37,9 +37,7 @@ var Pod = require('bip-pod'),
         contentType : DEFS.CONTENTTYPE_JSON
       }
     },
-    dataSources : [
-        require('./models/dup')
-    ]
+    trackDuplicates : true
   });
 
 EverNote.xml2json = function(payload) {
