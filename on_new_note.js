@@ -17,19 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function AddNote(podConfig) {
-  this.name = 'add_note';
-  this.title = 'Add a Note';
-  this.description = 'Adds a Note to one of your Notebooks';
-  this.trigger = false;
+function OnNewNote(podConfig) {
+  this.name = 'on_new_note';
+  this.title = 'On A New Note';
+  this.description = 'Triggers when a new Note appears in one of your Notebooks';
+  this.trigger = true;
   this.singleton = false;
   this.auto = false;
   this.podConfig = podConfig;
 }
 
-AddNote.prototype = {};
+OnNewNote.prototype = {};
 
-AddNote.prototype.getSchema = function() {
+OnNewNote.prototype.getSchema = function() {
   return {
     "config": {
       "properties" : {
@@ -50,22 +50,25 @@ AddNote.prototype.getSchema = function() {
     },
     "imports": {
       "properties" : {
-        "title" : {
-          "type" :  "string",
-          "description" : "Title"
-        },
-        "note" : {
-          "type" :  "string",
-          "description" : "Note"
-        }
-      },
-      "required" : [ "title", "note" ]
+      }
     },
     "exports": {
       "properties" : {
         "guid" : {
           "type" : "string",
           "description" : "Note GUID"
+        },
+         "title" : {
+          "type" : "string",
+          "description" : "Title"
+        },
+        "content" : {
+          "type" : "string",
+          "description" : "XML Content"
+        },
+        "note" : {
+          "type" : "string",
+          "description" : "Extracted Note"
         },
         "notebookGuid" : {
           "type" : "string",
@@ -76,26 +79,36 @@ AddNote.prototype.getSchema = function() {
   }
 }
 
-AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
-  var pod = this.pod;
+OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
+  var pod = this.pod,
+    $resource = this.$resource;
 
-  if (imports.title && imports.note) {
-    var noteStore = pod.getNoteStore(sysImports);
-
-    var noteBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    noteBody += "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">";
-    noteBody += "<en-note>" + imports.note + "</en-note>";
-
-    var newNote = pod.newNote();
-    newNote.title = imports.title;
-    newNote.note = noteBody;
-    newNote.notebookGuid = channel.config.notebook_guid;
-
-    noteStore.createNote(newNote, function(err, note) {
-      next(err, note);
+  if (channel.config.notebook_guid) {
+    pod.findNotesInNotebook(sysImports, channel.config.notebook_guid, null, null, function(err, result) {
+      var note;
+      if (err) {
+        next(err);
+      } else {
+        for (var i = 0; i < result.notes.length; i++) {
+          $resource.dupFilter(result.notes[i], 'guid', channel, sysImports, function(err, note) {
+            if (err) {
+              next(err);
+            } else {
+              pod.getNote(sysImports, note.guid, function(err, note) {
+                if (err) {
+                  next(err);
+                } else {
+                  note.note = pod.xml2json(note.content)['en-note'];
+                  next(false, note);
+                }
+              });
+            }
+          });
+        }
+      }
     });
   }
 }
 
 // -----------------------------------------------------------------------------
-module.exports = AddNote;
+module.exports = OnNewNote;

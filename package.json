@@ -25,7 +25,8 @@
   "dependencies": {
     "bip-pod": ">=0.0.1",
     "evernote": "^1.25.3",
-    "passport-evernote": "^0.1.1"
+    "passport-evernote": "^0.1.1",
+    "xml2json": "^0.5.1"
   },
   "engines": {
     "node": ">= 0.10.0"
