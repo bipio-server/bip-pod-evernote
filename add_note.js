@@ -68,13 +68,6 @@ AddNote.prototype.getSchema = function() {
           "description" : "String goes out"
         }
       }
-    },
-    'renderers' : {
-      'hello' : {
-        description : 'Hello World',
-        description_long : 'Hello World',
-        contentType : DEFS.CONTENTTYPE_XML
-      }     
     }
   }
 }
