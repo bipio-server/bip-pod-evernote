@@ -29,7 +29,8 @@ var Pod = require('bip-pod'),
       "oauth": {
         "consumerKey" : "",
         "consumerSecret" : ""
-      }
+      },
+      "sandbox" : true
     },
     'renderers' : {
       'get_notebooks' : {
@@ -58,8 +59,10 @@ EverNote.getNoteStore = function(sysImports) {
 }
 
 EverNote.getClient = function(sysImports) {
+  var podConfig = this.getConfig();
   return new EVClient.Client({
-    token : sysImports.auth.oauth.token
+    token : sysImports.auth.oauth.token,
+    sandbox : podConfig.sandbox
   });
 }
 
