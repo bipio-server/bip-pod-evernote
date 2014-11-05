@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ var Q = require('Q');
+
 function AddNote(podConfig) {
   this.name = 'add_note';
   this.title = 'Add a Note';
@@ -44,6 +46,11 @@ AddNote.prototype.getSchema = function() {
           "label" : {
             "$ref" : "/renderers/get_notebooks/{name}"
           }
+        },
+        "embed_attachments" : {
+          "type" : "boolean",
+          "description" : "Embed Attachments into Note",
+          "default" : false
         }
       },
       "required" : [ "notebook_guid" ]
@@ -77,24 +84,65 @@ AddNote.prototype.getSchema = function() {
 }
 
 AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
-  var pod = this.pod;
+  var pod = this.pod,
+    noteStore = pod.getNoteStore(sysImports),
+    noteBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+    newNote = pod.newNote();
 
-  if (imports.title && imports.note) {
-    var noteStore = pod.getNoteStore(sysImports);
+  newNote.title = imports.title;
 
-    var noteBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    noteBody += "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">";
-    noteBody += "<en-note>" + imports.note + "</en-note>";
+  noteBody += "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">";
 
-    var newNote = pod.newNote();
-    newNote.title = imports.title;
-    newNote.note = noteBody;
-    newNote.notebookGuid = channel.config.notebook_guid;
+  newNote.notebookGuid = channel.config.notebook_guid;
+
+  if (contentParts._files && contentParts._files.length) {
+    var deferred, promises = [];
+    for (var i = 0; i < contentParts._files.length; i++) {
+      deferred = Q.defer();
+      promises.push(deferred.promise);
+
+      (function(deferred) {
+        pod.getFileResource(contentParts._files[i], function(err, resource) {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve(resource);
+          }
+        });
+      })(deferred);
+    }
+
+    Q.all(promises).then(function(resources) {
+      newNote.resources = resources;
+
+      noteBody += "<en-note>" + imports.note;
+
+      if (channel.config.embed_attachments) {
+        for (var i = 0; i < resources.length; i++) {
+          noteBody += '<en-media type="' + resources[i].mime + '" hash="' + resources[i].data.bodyHash + '" />';
+        }
+      }
+
+      noteBody += '</en-note>';
+
+      newNote.content = noteBody;
+      noteStore.createNote(newNote, function(err, note) {
+        next(err, note);
+      });
+    }, function(err) {
+      next(err);
+    });
+  } else {
+
+    noteBody += "<en-note>" + imports.note;
+    noteBody += '</en-note>';
+    newNote.content = noteBody;
 
     noteStore.createNote(newNote, function(err, note) {
       next(err, note);
     });
   }
+
 }
 
 // -----------------------------------------------------------------------------

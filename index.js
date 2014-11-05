@@ -66,6 +66,32 @@ EverNote.getClient = function(sysImports) {
   });
 }
 
+EverNote.getFileResource = function(fileStruct, next) {
+  app.helper.fileHash(fileStruct.localpath, function(err, hash) {
+    if (err) {
+      next(err);
+    } else {
+      var data = new EVClient.Data();
+
+      fs.readFile(fileStruct.localpath, function(err, fileData) {
+        if (err) {
+          next(err);
+        } else {
+          data.size = fileStruct.size;
+          data.bodyHash = hash;
+          data.body = fileData;
+
+          resource = new EVClient.Resource();
+          resource.mime = fileStruct.type;
+          resource.data = data;
+
+          next(false, resource);
+        }
+      });
+    }
+  });
+}
+
 EverNote.getNote = function(sysImports, noteGUID, next) {
   this.getNoteStore(sysImports).getNote(noteGUID, true, true, true, true, next);
 }
