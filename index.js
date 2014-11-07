@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 var Pod = require('bip-pod'),
+  passthrough = require('stream').PassThrough,
+  Q = require('q'),
   xml2json = require('xml2json'),
   EVClient = require('evernote').Evernote,
   EverNote = new Pod({
@@ -69,41 +71,64 @@ EverNote.getClient = function(sysImports) {
 EverNote.getFileResource = function(fileStruct, next) {
   var self = this;
 
-  app.helper.fileHash(fileStruct.localpath, function(err, hash) {
+  self.$resource.file.get(fileStruct, function(err, fileStruct, readStream) {
     if (err) {
       next(err);
     } else {
-      var data = new EVClient.Data();
+      var hashStream = new passthrough,
+        hashDefer = Q.defer(),
+        bufferStream = new passthrough,
+        bufDefer = Q.defer(),
+        promises = [ hashDefer.promise, bufDefer.promise ];
 
-      self.$resource.file.get(fileStruct, function(err, fileStruct, readStream) {
+
+      readStream.pipe(hashStream);
+      self.$resource.stream.toHash(hashStream, function(err, hash) {
         if (err) {
-          next(err);
+          hashDefer.reject(err);
         } else {
-          data.size = fileStruct.size;
-          data.bodyHash = hash;
-
-          var buffers = [];
-          readStream.on('data', function(chunk) {
-              buffers.push(chunk);
-          });
-
-          readStream.on('error', function(err) {
-              next(err);
-          });
-
-          readStream.on('end', function() {
-            var buffer = Buffer.concat(buffers);
-
-            data.body = buffer;
-
-            resource = new EVClient.Resource();
-            resource.mime = fileStruct.type;
-            resource.data = data;
-
-            next(false, resource);
-          });
+          hashDefer.resolve({ hash : hash });
         }
       });
+
+      readStream.pipe(bufferStream);
+      self.$resource.stream.toBuffer(bufferStream, function(err, buffer) {
+        if (err) {
+          bufDefer.reject(err);
+        } else {
+          bufDefer.resolve({ buffer : buffer });
+        }
+      });
+
+      Q.all(promises).then(
+        function(results) {
+          var buffer, hash, r;
+
+          for (var i = 0; i < results.length; i++) {
+            r = results[i];
+            if (r.hash) {
+              hash = r.hash;
+            } else if (r.buffer) {
+              buffer = r.buffer;
+            }
+          }
+
+          var data = new EVClient.Data();
+
+          data.size = fileStruct.size;
+          data.bodyHash = hash;
+          data.body = buffer;
+
+          resource = new EVClient.Resource();
+          resource.mime = fileStruct.type;
+          resource.data = data;
+
+          next(false, resource);
+        },
+        function(err) {
+          next(err);
+        }
+      );
     }
   });
 }
