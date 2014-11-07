@@ -126,6 +126,7 @@ AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, 
       noteBody += '</en-note>';
 
       newNote.content = noteBody;
+
       noteStore.createNote(newNote, function(err, note) {
         next(err, note);
       });

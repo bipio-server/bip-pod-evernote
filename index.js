@@ -67,25 +67,41 @@ EverNote.getClient = function(sysImports) {
 }
 
 EverNote.getFileResource = function(fileStruct, next) {
+  var self = this;
+
   app.helper.fileHash(fileStruct.localpath, function(err, hash) {
     if (err) {
       next(err);
     } else {
       var data = new EVClient.Data();
 
-      fs.readFile(fileStruct.localpath, function(err, fileData) {
+      self.$resource.file.get(fileStruct, function(err, fileStruct, readStream) {
         if (err) {
           next(err);
         } else {
           data.size = fileStruct.size;
           data.bodyHash = hash;
-          data.body = fileData;
 
-          resource = new EVClient.Resource();
-          resource.mime = fileStruct.type;
-          resource.data = data;
+          var buffers = [];
+          readStream.on('data', function(chunk) {
+              buffers.push(chunk);
+          });
 
-          next(false, resource);
+          readStream.on('error', function(err) {
+              next(err);
+          });
+
+          readStream.on('end', function() {
+            var buffer = Buffer.concat(buffers);
+
+            data.body = buffer;
+
+            resource = new EVClient.Resource();
+            resource.mime = fileStruct.type;
+            resource.data = data;
+
+            next(false, resource);
+          });
         }
       });
     }
