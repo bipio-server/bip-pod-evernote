@@ -1,0 +1,177 @@
+{
+  "name": "evernote",
+  "title": "EverNote",
+  "description": "<a href=\"https://evernote.com\" target=\"_blank\">Evernote</a> is the place to collect inspirational ideas, write meaningful words, and move your important projects forward",
+  "url": "",
+  "trackDuplicates": true,
+  "config": {
+    "oauth": {
+      "consumerKey": "",
+      "consumerSecret": "",
+      "__requestTokenURL": "https://sandbox.evernote.com/oauth",
+      "__accessTokenURL": "https://sandbox.evernote.com/oauth",
+      "__userAuthorizationURL": "https://sandbox.evernote.com/OAuth.action"
+    },
+    "sandbox": false
+  },
+  "auth": {
+    "strategy": "oauth"
+  },
+  "rpcs": {
+    "get_notebooks": {
+      "contentType": "application/json",
+      "title": "Get Notebooks"
+    }
+  },
+  "actions": {
+    "add_note": {
+      "title": "Add a Note",
+      "description": "Adds a Note to one of your Notebooks",
+      "trigger": "invoke",
+      "config": {
+        "properties": {
+          "notebook_guid": {
+            "type": "string",
+            "description": "Notebook GUID",
+            "oneOf": [
+              {
+                "$ref": "/renderers/get_notebooks/{guid}"
+              }
+            ],
+            "label": {
+              "$ref": "/renderers/get_notebooks/{name}"
+            }
+          },
+          "embed_attachments": {
+            "type": "boolean",
+            "description": "Embed Attachments into Note",
+            "default": false
+          }
+        },
+        "required": [
+          "notebook_guid"
+        ],
+        "disposition": [
+          "notebook_guid",
+          "embed_attachments"
+        ]
+      },
+      "exports": {
+        "properties": {
+          "guid": {
+            "type": "string",
+            "description": "Note GUID"
+          },
+          "notebookGuid": {
+            "type": "string",
+            "description": "Notebook GUID"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title"
+          },
+          "note": {
+            "type": "string",
+            "description": "Note"
+          }
+        },
+        "required": [
+          "title",
+          "note"
+        ],
+        "disposition": [
+          "title",
+          "note"
+        ]
+      }
+    },
+    "delete_note": {
+      "title": "Delete a Note",
+      "description": "Deletes a Note from one of your Notebooks",
+      "trigger": "invoke",
+      "config": {
+        "properties": {}
+      },
+      "exports": {
+        "properties": {
+          "seq": {
+            "type": "string",
+            "description": "Action Sequence Number"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "note_guid": {
+            "type": "string",
+            "description": "Note GUID"
+          }
+        },
+        "required": [
+          "note_guid"
+        ],
+        "disposition": [
+          "note_guid"
+        ]
+      }
+    },
+    "on_new_note": {
+      "title": "On A New Note",
+      "description": "Triggers when a new Note appears in one of your Notebooks",
+      "trigger": "poll",
+      "config": {
+        "properties": {
+          "notebook_guid": {
+            "type": "string",
+            "description": "Notebook GUID",
+            "oneOf": [
+              {
+                "$ref": "/renderers/get_notebooks/{guid}"
+              }
+            ],
+            "label": {
+              "$ref": "/renderers/get_notebooks/{name}"
+            }
+          }
+        },
+        "required": [
+          "notebook_guid"
+        ],
+        "disposition": [
+          "notebook_guid"
+        ]
+      },
+      "exports": {
+        "properties": {
+          "guid": {
+            "type": "string",
+            "description": "Note GUID"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title"
+          },
+          "content": {
+            "type": "string",
+            "description": "XML Content"
+          },
+          "note": {
+            "type": "string",
+            "description": "Extracted Note"
+          },
+          "notebookGuid": {
+            "type": "string",
+            "description": "Notebook GUID"
+          }
+        }
+      },
+      "imports": {
+        "properties": {}
+      }
+    }
+  }
+}

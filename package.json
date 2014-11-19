@@ -1,6 +1,6 @@
 {
   "name": "bip-pod-evernote",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "evernote Pod for Bipio",
   "keywords": [
     "bip",
@@ -23,7 +23,6 @@
   ],
   "main": ".",
   "dependencies": {
-    "bip-pod": ">=0.0.1",
     "evernote": "^1.25.3",
     "passport-evernote": "^0.1.1",
     "q": "^1.0.1",
