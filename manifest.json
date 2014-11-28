@@ -1,8 +1,8 @@
 {
   "name": "evernote",
   "title": "EverNote",
-  "description": "<a href=\"https://evernote.com\" target=\"_blank\">Evernote</a> is the place to collect inspirational ideas, write meaningful words, and move your important projects forward",
-  "url": "",
+  "description": "Evernote is the place to collect inspirational ideas, write meaningful words, and move your important projects forward",
+  "url": "https://evernote.com",
   "trackDuplicates": true,
   "config": {
     "oauth": {
@@ -27,6 +27,7 @@
     "add_note": {
       "title": "Add a Note",
       "description": "Adds a Note to one of your Notebooks",
+      "doc_ref" : "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_createNote",
       "trigger": "invoke",
       "config": {
         "properties": {
@@ -92,6 +93,7 @@
     "delete_note": {
       "title": "Delete a Note",
       "description": "Deletes a Note from one of your Notebooks",
+      "doc_ref" : "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_deleteNote",
       "trigger": "invoke",
       "config": {
         "properties": {}
@@ -122,6 +124,7 @@
     "on_new_note": {
       "title": "On A New Note",
       "description": "Triggers when a new Note appears in one of your Notebooks",
+      "doc_ref" : "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_getNote",
       "trigger": "poll",
       "config": {
         "properties": {

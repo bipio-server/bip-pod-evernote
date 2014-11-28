@@ -21,27 +21,7 @@ var Pod = require('bip-pod'),
   Q = require('q'),
   xml2json = require('xml2json'),
   EVClient = require('evernote').Evernote,
-  EverNote = new Pod({
-    name : 'evernote', // pod name (action prefix)
-    title : 'EverNote', // short description
-    description : '<a href="https://evernote.com" target="_blank">Evernote</a> is the place to collect inspirational ideas, write meaningful words, and move your important projects forward',
-    authType : 'oauth',
-    passportStrategy : require('passport-evernote').Strategy,
-    config : {
-      "oauth": {
-        "consumerKey" : "",
-        "consumerSecret" : ""
-      },
-      "sandbox" : true
-    },
-    'renderers' : {
-      'get_notebooks' : {
-        description : 'Get Notebooks',
-        contentType : DEFS.CONTENTTYPE_JSON
-      }
-    },
-    trackDuplicates : true
-  });
+  EverNote = new Pod();
 
 EverNote.xml2json = function(payload) {
   return xml2json.toJson(payload, { "object" : true} );
@@ -166,11 +146,6 @@ EverNote.rpc = function(action, method, sysImports, options, channel, req, res) 
     this.__proto__.rpc.apply(this, arguments);
   }
 }
-
-// Include any actions
-EverNote.add(require('./add_note.js'));
-EverNote.add(require('./delete_note.js'));
-EverNote.add(require('./on_new_note.js'));
 
 // -----------------------------------------------------------------------------
 module.exports = EverNote;

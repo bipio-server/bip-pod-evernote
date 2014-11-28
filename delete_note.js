@@ -17,43 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function DeleteNote(podConfig) {
-  this.name = 'delete_note';
-  this.title = 'Delete a Note';
-  this.description = 'Deletes a Note from one of your Notebooks';
-  this.trigger = false;
-  this.singleton = false;
-  this.auto = false;
-  this.podConfig = podConfig;
-}
+function DeleteNote() {}
 
 DeleteNote.prototype = {};
-
-DeleteNote.prototype.getSchema = function() {
-  return {
-    "config": {
-      "properties" : {
-      }
-    },
-    "imports": {
-      "properties" : {
-        "note_guid" : {
-          "type" :  "string",
-          "description" : "Note GUID"
-        }
-      },
-      "required" : [ "note_guid" ]
-    },
-    "exports": {
-      "properties" : {
-        "seq" : {
-          "type" : "string",
-          "description" : "Action Sequence Number"
-        }
-      }
-    }
-  }
-}
 
 DeleteNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
   var pod = this.pod;

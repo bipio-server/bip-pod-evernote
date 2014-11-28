@@ -19,69 +19,9 @@
 
  var Q = require('Q');
 
-function AddNote(podConfig) {
-  this.name = 'add_note';
-  this.title = 'Add a Note';
-  this.description = 'Adds a Note to one of your Notebooks';
-  this.trigger = false;
-  this.singleton = false;
-  this.auto = false;
-  this.podConfig = podConfig;
-}
+function AddNote(podConfig) {}
 
 AddNote.prototype = {};
-
-AddNote.prototype.getSchema = function() {
-  return {
-    "config": {
-      "properties" : {
-        "notebook_guid" : {
-          "type" :  "string",
-          "description" : "Notebook GUID",
-          "oneOf" : [
-            {
-              "$ref" : '/renderers/get_notebooks/{guid}'
-            }
-          ],
-          "label" : {
-            "$ref" : "/renderers/get_notebooks/{name}"
-          }
-        },
-        "embed_attachments" : {
-          "type" : "boolean",
-          "description" : "Embed Attachments into Note",
-          "default" : false
-        }
-      },
-      "required" : [ "notebook_guid" ]
-    },
-    "imports": {
-      "properties" : {
-        "title" : {
-          "type" :  "string",
-          "description" : "Title"
-        },
-        "note" : {
-          "type" :  "string",
-          "description" : "Note"
-        }
-      },
-      "required" : [ "title", "note" ]
-    },
-    "exports": {
-      "properties" : {
-        "guid" : {
-          "type" : "string",
-          "description" : "Note GUID"
-        },
-        "notebookGuid" : {
-          "type" : "string",
-          "description" : "Notebook GUID"
-        }
-      }
-    }
-  }
-}
 
 AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
   var pod = this.pod,

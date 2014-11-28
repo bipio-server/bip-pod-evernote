@@ -17,97 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function OnNewNote(podConfig) {
-  this.name = 'on_new_note';
-  this.title = 'On A New Note';
-  this.description = 'Triggers when a new Note appears in one of your Notebooks';
-  this.trigger = true;
-  this.singleton = false;
-  this.auto = false;
-  this.podConfig = podConfig;
-}
+function OnNewNote() {}
 
 OnNewNote.prototype = {};
-
-OnNewNote.prototype.getSchema = function() {
-  return {
-    "config": {
-      "properties" : {
-        "notebook_guid" : {
-          "type" :  "string",
-          "description" : "Notebook GUID",
-          "oneOf" : [
-            {
-              "$ref" : '/renderers/get_notebooks/{guid}'
-            }
-          ],
-          "label" : {
-            "$ref" : "/renderers/get_notebooks/{name}"
-          }
-        }
-      },
-      "required" : [ "notebook_guid" ]
-    },
-    "imports": {
-      "properties" : {
-      }
-    },
-    "exports": {
-      "properties" : {
-        "guid" : {
-          "type" : "string",
-          "description" : "Note GUID"
-        },
-         "title" : {
-          "type" : "string",
-          "description" : "Title"
-        },
-        "content" : {
-          "type" : "string",
-          "description" : "XML Content"
-        },
-        "note" : {
-          "type" : "string",
-          "description" : "Extracted Note"
-        },
-        "notebookGuid" : {
-          "type" : "string",
-          "description" : "Notebook GUID"
-        }
-      }
-    }
-  }
-}
 
 OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
   var pod = this.pod,
     $resource = this.$resource;
 
-  if (channel.config.notebook_guid) {
-    pod.findNotesInNotebook(sysImports, channel.config.notebook_guid, null, null, function(err, result) {
-      var note;
-      if (err) {
-        next(err);
-      } else {
-        for (var i = 0; i < result.notes.length; i++) {
-          $resource.dupFilter(result.notes[i], 'guid', channel, sysImports, function(err, note) {
-            if (err) {
-              next(err);
-            } else {
-              pod.getNote(sysImports, note.guid, function(err, note) {
-                if (err) {
-                  next(err);
-                } else {
-                  note.note = pod.xml2json(note.content)['en-note'];
-                  next(false, note);
-                }
-              });
-            }
-          });
-        }
+  pod.findNotesInNotebook(sysImports, channel.config.notebook_guid, null, null, function(err, result) {
+    var note;
+    if (err) {
+      next(err);
+    } else {
+      for (var i = 0; i < result.notes.length; i++) {
+        $resource.dupFilter(result.notes[i], 'guid', channel, sysImports, function(err, note) {
+          if (err) {
+            next(err);
+          } else {
+            pod.getNote(sysImports, note.guid, function(err, note) {
+              if (err) {
+                next(err);
+              } else {
+                note.note = pod.xml2json(note.content)['en-note'];
+                next(false, note);
+              }
+            });
+          }
+        });
       }
-    });
-  }
+    }
+  });
 }
 
 // -----------------------------------------------------------------------------
