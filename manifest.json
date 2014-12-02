@@ -1,6 +1,6 @@
 {
   "name": "evernote",
-  "title": "EverNote",
+  "title": "Evernote",
   "description": "Evernote is the place to collect inspirational ideas, write meaningful words, and move your important projects forward",
   "url": "https://evernote.com",
   "trackDuplicates": true,
@@ -15,7 +15,21 @@
     "sandbox": false
   },
   "auth": {
-    "strategy": "oauth"
+    "strategy": "oauth",
+    "properties": {
+      "access_token": {
+        "type": "string",
+        "title": "Access Token"
+      },
+      "sandbox" : {
+        "type" : "boolean",
+        "title" : "Sandbox Mode"
+      }
+    },
+    "disposition": [
+      "access_token",
+      "sandbox"
+    ]
   },
   "rpcs": {
     "get_notebooks": {
@@ -27,7 +41,7 @@
     "add_note": {
       "title": "Add a Note",
       "description": "Adds a Note to one of your Notebooks",
-      "doc_ref" : "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_createNote",
+      "doc_ref": "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_createNote",
       "trigger": "invoke",
       "config": {
         "properties": {
@@ -93,7 +107,7 @@
     "delete_note": {
       "title": "Delete a Note",
       "description": "Deletes a Note from one of your Notebooks",
-      "doc_ref" : "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_deleteNote",
+      "doc_ref": "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_deleteNote",
       "trigger": "invoke",
       "config": {
         "properties": {}
@@ -124,7 +138,7 @@
     "on_new_note": {
       "title": "On A New Note",
       "description": "Triggers when a new Note appears in one of your Notebooks",
-      "doc_ref" : "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_getNote",
+      "doc_ref": "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_getNote",
       "trigger": "poll",
       "config": {
         "properties": {

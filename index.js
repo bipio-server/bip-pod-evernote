@@ -43,8 +43,10 @@ EverNote.getNoteStore = function(sysImports) {
 EverNote.getClient = function(sysImports) {
   var podConfig = this.getConfig();
   return new EVClient.Client({
-    token : sysImports.auth.oauth.token,
-    sandbox : podConfig.sandbox
+    token : sysImports.auth.oauth.access_token,
+    sandbox : undefined === sysImports.auth.oauth.sandbox
+      ? podConfig.sandbox
+      : sysImports.auth.oauth.sandbox
   });
 }
 
