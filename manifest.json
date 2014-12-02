@@ -50,11 +50,11 @@
             "description": "Notebook GUID",
             "oneOf": [
               {
-                "$ref": "/renderers/get_notebooks/{guid}"
+                "$ref": "/rpcs/get_notebooks/{guid}"
               }
             ],
             "label": {
-              "$ref": "/renderers/get_notebooks/{name}"
+              "$ref": "/rpcs/get_notebooks/{name}"
             }
           },
           "embed_attachments": {
@@ -147,11 +147,11 @@
             "description": "Notebook GUID",
             "oneOf": [
               {
-                "$ref": "/renderers/get_notebooks/{guid}"
+                "$ref": "/rpcs/get_notebooks/{guid}"
               }
             ],
             "label": {
-              "$ref": "/renderers/get_notebooks/{name}"
+              "$ref": "/rpcs/get_notebooks/{name}"
             }
           }
         },
