@@ -33,7 +33,8 @@ OnNewNote.prototype.trigger = function(imports, channel, sysImports, contentPart
       });
     }
   });
-});
+
+};
 
 OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
   var pod = this.pod,
