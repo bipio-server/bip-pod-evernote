@@ -21,6 +21,18 @@ function OnNewNote() {}
 
 OnNewNote.prototype = {};
 
+OnNewNote.prototype.trigger = function(imports, channel, sysImports, contentParts, next) {
+  this.invoke(imports, channel, sysImports, contentParts, function(err, exports) {
+    if (err) {
+      next(err);
+    } else {
+      $resource.dupFilter(exports, 'guid', channel, sysImports, function(err, note) {
+        next(err, note);
+      });
+    }
+  });
+});
+
 OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
   var pod = this.pod,
     $resource = this.$resource;
@@ -31,18 +43,12 @@ OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts
       next(err);
     } else {
       for (var i = 0; i < result.notes.length; i++) {
-        $resource.dupFilter(result.notes[i], 'guid', channel, sysImports, function(err, note) {
+        pod.getNote(sysImports, result.notes[i].guid, function(err, note) {
           if (err) {
             next(err);
           } else {
-            pod.getNote(sysImports, note.guid, function(err, note) {
-              if (err) {
-                next(err);
-              } else {
-                note.note = pod.xml2json(note.content)['en-note'];
-                next(false, note);
-              }
-            });
+            note.note = pod.xml2json(note.content)['en-note'];
+            next(false, note);
           }
         });
       }
