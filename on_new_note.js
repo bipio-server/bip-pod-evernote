@@ -22,6 +22,8 @@ function OnNewNote() {}
 OnNewNote.prototype = {};
 
 OnNewNote.prototype.trigger = function(imports, channel, sysImports, contentParts, next) {
+  var $resource = this.$resource;
+
   this.invoke(imports, channel, sysImports, contentParts, function(err, exports) {
     if (err) {
       next(err);
