@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- var Q = require('Q');
+var Q = require('q');
 
 function AddNote(podConfig) {}
 
