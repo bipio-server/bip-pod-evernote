@@ -21,9 +21,9 @@
         "type": "string",
         "title": "Access Token"
       },
-      "sandbox" : {
-        "type" : "boolean",
-        "title" : "Sandbox Mode"
+      "sandbox": {
+        "type": "boolean",
+        "title": "Sandbox Mode"
       }
     },
     "disposition": [
@@ -190,5 +190,8 @@
         "properties": {}
       }
     }
-  }
+  },
+  "tags": [
+    "productivity"
+  ]
 }
