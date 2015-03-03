@@ -47,7 +47,6 @@
         "properties": {
           "notebook_guid": {
             "type": "string",
-            "description": "Notebook GUID",
             "oneOf": [
               {
                 "$ref": "/rpcs/get_notebooks/{guid}"
@@ -55,12 +54,13 @@
             ],
             "label": {
               "$ref": "/rpcs/get_notebooks/{name}"
-            }
+            },
+            "title": "Notebook GUID"
           },
           "embed_attachments": {
             "type": "boolean",
-            "description": "Embed Attachments into Note",
-            "default": false
+            "default": false,
+            "title": "Embed Attachments into Note"
           }
         },
         "required": [
@@ -75,11 +75,11 @@
         "properties": {
           "guid": {
             "type": "string",
-            "description": "Note GUID"
+            "title": "Note GUID"
           },
           "notebookGuid": {
             "type": "string",
-            "description": "Notebook GUID"
+            "title": "Notebook GUID"
           }
         }
       },
@@ -87,11 +87,11 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "Title"
+            "title": "Title"
           },
           "note": {
             "type": "string",
-            "description": "Note"
+            "title": "Note"
           }
         },
         "required": [
@@ -116,7 +116,7 @@
         "properties": {
           "seq": {
             "type": "string",
-            "description": "Action Sequence Number"
+            "title": "Action Sequence Number"
           }
         }
       },
@@ -124,7 +124,7 @@
         "properties": {
           "note_guid": {
             "type": "string",
-            "description": "Note GUID"
+            "title": "Note GUID"
           }
         },
         "required": [
@@ -144,7 +144,6 @@
         "properties": {
           "notebook_guid": {
             "type": "string",
-            "description": "Notebook GUID",
             "oneOf": [
               {
                 "$ref": "/rpcs/get_notebooks/{guid}"
@@ -152,7 +151,8 @@
             ],
             "label": {
               "$ref": "/rpcs/get_notebooks/{name}"
-            }
+            },
+            "title": "Notebook GUID"
           }
         },
         "required": [
@@ -166,23 +166,23 @@
         "properties": {
           "guid": {
             "type": "string",
-            "description": "Note GUID"
+            "title": "Note GUID"
           },
           "title": {
             "type": "string",
-            "description": "Title"
+            "title": "Title"
           },
           "content": {
             "type": "string",
-            "description": "XML Content"
+            "title": "XML Content"
           },
           "note": {
             "type": "string",
-            "description": "Extracted Note"
+            "title": "Extracted Note"
           },
           "notebookGuid": {
             "type": "string",
-            "description": "Notebook GUID"
+            "title": "Notebook GUID"
           }
         }
       },
