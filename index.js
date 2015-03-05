@@ -122,7 +122,7 @@ EverNote.getNote = function(sysImports, noteGUID, next) {
     if (err) {
       next(err);
     } else {
-      self.getTags(sysImports, note.tagGuids, function(err, tags) {
+      self.getNoteTags(sysImports, note.tagGuids, function(err, tags) {
         note.tagNames = tags;
         next(err, note);
       });
@@ -130,13 +130,13 @@ EverNote.getNote = function(sysImports, noteGUID, next) {
   });
 }
 
-EverNote.getTags = function(sysImports, tagGUIDs, next) {
+EverNote.getNoteTags = function(sysImports, tagGUIDs, next) {
   var tagsDeferred = [],
     self = this,
     _ = this.$resource._,
     defer;
 
-  if (tagGUIDs.length) {
+  if (tagGUIDs && tagGUIDs.length) {
     for (var i = 0; i < tagGUIDs.length; i++) {
       defer = Q.defer();
       tagsDeferred.push(defer);
