@@ -42,6 +42,7 @@ OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts
 
   pod.findNotesInNotebook(sysImports, channel.config.notebook_guid, null, null, function(err, result) {
     var note;
+
     if (err) {
       next(err);
     } else {

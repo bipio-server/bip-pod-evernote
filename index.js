@@ -116,7 +116,53 @@ EverNote.getFileResource = function(fileStruct, next) {
 }
 
 EverNote.getNote = function(sysImports, noteGUID, next) {
-  this.getNoteStore(sysImports).getNote(noteGUID, true, true, true, true, next);
+  var self = this;
+
+  this.getNoteStore(sysImports).getNote(noteGUID, true, true, true, true, function(err, note) {
+    if (err) {
+      next(err);
+    } else {
+      self.getTags(sysImports, note.tagGuids, function(err, tags) {
+        note.tagNames = tags;
+        next(err, note);
+      });
+    }
+  });
+}
+
+EverNote.getTags = function(sysImports, tagGUIDs, next) {
+  var tagsDeferred = [],
+    self = this,
+    _ = this.$resource._,
+    defer;
+
+  if (tagGUIDs.length) {
+    for (var i = 0; i < tagGUIDs.length; i++) {
+      defer = Q.defer();
+      tagsDeferred.push(defer);
+
+      (function(tagGUID, defer) {
+        self.getNoteStore(sysImports).getTag(tagGUID, function(err, tag) {
+          if (err) {
+            defer.reject(err);
+          } else {
+            defer.resolve(tag);
+          }
+        });
+      })(tagGUIDs[i], defer);
+    }
+
+    Q.all(_.pluck(tagsDeferred, 'promise')).then(
+      function(tags) {
+        next(false, _.pluck(tags, 'name'));
+      },
+      function(err) {
+        next(err.toString());
+      }
+    );
+  } else {
+    next(false, []);
+  }
 }
 
 EverNote.findNotesInNotebook = function(sysImports, notebookGUID, page, limit, next) {

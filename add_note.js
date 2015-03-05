@@ -25,6 +25,7 @@ AddNote.prototype = {};
 
 AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, next) {
   var pod = this.pod,
+    $resource = this.$resource,
     noteStore = pod.getNoteStore(sysImports),
     noteBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
     newNote = pod.newNote();
@@ -34,6 +35,16 @@ AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, 
   noteBody += "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">";
 
   newNote.notebookGuid = channel.config.notebook_guid;
+
+  if (imports.tags) {
+    if ($resource.helper.isArray(imports.tags)) {
+      newNote.tagNames = imports.tags;
+    } else if ($resource.helper.isString(imports.tags)) {
+      newNote.tagNames = imports.tags.split(',').map(function(tag) {
+        return tag.trim();
+      });
+    }
+  }
 
   if (contentParts._files && contentParts._files.length) {
     var deferred, promises = [];

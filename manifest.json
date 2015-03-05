@@ -92,6 +92,11 @@
           "note": {
             "type": "string",
             "title": "Note"
+          },
+          "tags" : {
+            "type" : "array",
+            "title" : "Tags",
+            "description" : "Comma Separated List Of Tags, Or Array Of Strings"
           }
         },
         "required": [
@@ -100,13 +105,14 @@
         ],
         "disposition": [
           "title",
-          "note"
+          "note",
+          "tags"
         ]
       }
     },
     "delete_note": {
       "title": "Delete a Note",
-      "description": "Deletes a Note from one of your Notebooks",
+      "description": "Deletes A Note From One Of Your Notebooks",
       "doc_ref": "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_deleteNote",
       "trigger": "invoke",
       "config": {
@@ -135,9 +141,60 @@
         ]
       }
     },
+    "get_note": {
+      "title": "Get a Note",
+      "description": "Retrieves A Note",
+      "doc_ref": "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_getNote",
+      "trigger": "invoke",
+      "config": {
+        "properties": {}
+      },
+      "exports": {
+        "properties": {
+          "guid": {
+            "type": "string",
+            "title": "Note GUID"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "content": {
+            "type": "string",
+            "title": "XML Content"
+          },
+          "note": {
+            "type": "string",
+            "title": "Extracted Note"
+          },
+          "notebookGuid": {
+            "type": "string",
+            "title": "Notebook GUID"
+          },
+          "tagNames" : {
+            "type" : "array",
+            "title" : "Tag Names"
+          }
+        }
+      },
+      "imports": {
+        "properties": {
+          "note_guid": {
+            "type": "string",
+            "title": "Note GUID"
+          }
+        },
+        "required": [
+          "note_guid"
+        ],
+        "disposition": [
+          "note_guid"
+        ]
+      }
+    },
     "on_new_note": {
       "title": "On A New Note",
-      "description": "Triggers when a new Note appears in one of your Notebooks",
+      "description": "Triggers When A New Note Appears In One Of Your Notebooks",
       "doc_ref": "https://dev.evernote.com/doc/reference/NoteStore.html#Fn_NoteStore_getNote",
       "trigger": "poll",
       "config": {
@@ -183,6 +240,10 @@
           "notebookGuid": {
             "type": "string",
             "title": "Notebook GUID"
+          },
+          "tagNames" : {
+            "type" : "array",
+            "title" : "Tag Names"
           }
         }
       },
