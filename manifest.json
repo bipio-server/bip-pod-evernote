@@ -245,7 +245,15 @@
             "type" : "array",
             "title" : "Tag Names"
           }
-        }
+        },
+        "disposition": [
+        	"guid",
+        	"title",
+        	"content",
+        	"note",
+        	"notebookGuid",
+        	"tagNames"
+        	]
       },
       "imports": {
         "properties": {}
