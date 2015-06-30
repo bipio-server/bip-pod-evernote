@@ -34,7 +34,7 @@ AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, 
 
   noteBody += "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">";
 
-  newNote.notebookGuid = channel.config.notebook_guid;
+  newNote.notebookGuid = imports.notebook_guid;
 
   if (imports.tags) {
     if ($resource.helper.isArray(imports.tags)) {
@@ -68,7 +68,7 @@ AddNote.prototype.invoke = function(imports, channel, sysImports, contentParts, 
 
       noteBody += "<en-note>" + imports.note;
 
-      if (channel.config.embed_attachments) {
+      if (imports.embed_attachments) {
         for (var i = 0; i < resources.length; i++) {
           noteBody += '<en-media type="' + resources[i].mime + '" hash="' + resources[i].data.bodyHash + '" />';
         }

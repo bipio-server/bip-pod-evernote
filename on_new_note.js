@@ -40,7 +40,7 @@ OnNewNote.prototype.invoke = function(imports, channel, sysImports, contentParts
   var pod = this.pod,
     $resource = this.$resource;
 
-  pod.findNotesInNotebook(sysImports, channel.config.notebook_guid, null, null, function(err, result) {
+  pod.findNotesInNotebook(sysImports, imports.notebook_guid, null, null, function(err, result) {
     var note;
 
     if (err) {
